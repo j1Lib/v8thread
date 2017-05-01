@@ -141,6 +141,7 @@ v8t.prototype.init = function(i) {
                 });
             }
 
+        case "AUDIO":
         case "VIDEO":
 
             if (i.hasAttribute("thread-src")) {
@@ -206,7 +207,7 @@ v8t.prototype.init = function(i) {
     }
 };
 
-v8t.prototype.support = ["img", "video"];
+v8t.prototype.support = ["img", "video", "audio"];
 
 (function() {
 
