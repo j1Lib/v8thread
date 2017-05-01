@@ -96,7 +96,7 @@ v8t.prototype.ajax = function(start, end, s, f) {
 
 v8t.prototype.init = function(i) {
     switch (i.tagName) {
-        case "BUTTON":
+        case "IMG":
             if (i.hasAttribute("thread-src")) {
                 var canvas = document.createElement('canvas');
                 var ctx;
