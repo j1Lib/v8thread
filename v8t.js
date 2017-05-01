@@ -4,7 +4,9 @@ function v8t(url, thread, partial) {
     this.thread = thread || 5;
     this.response = {};
     this.ajax(0, this.partial, function(e) {
-        this.range = e.getResponseHeader('Content-Range').split("/")[1];
+
+
+        this.range = e.contentRange.split("/")[1];
 
         this.finish(0, e);
 
@@ -13,9 +15,8 @@ function v8t(url, thread, partial) {
                 this.handle(i);
             }
         }
-    }, function(code) {
-        window.xhr = code;
-        console.log(code.status);
+    }, function(e) {
+        console.log("Error: " + e.status);
     });
     var done_;
     this.done = function(cb) {
@@ -63,7 +64,8 @@ v8t.prototype.handle = function(i) {
 };
 
 v8t.prototype.finish = function(i, e) {
-    this.response[i] = new Uint8Array(e.response);
+
+    this.response[i] = e.arrayBuffer;
     var length = Object.keys(this.response).length;
     if (length >= this.range / this.partial) {
         if (this.config.createBlob) {
@@ -75,7 +77,7 @@ v8t.prototype.finish = function(i, e) {
             this.done();
         }
     } else if (i == 0) {
-        this.config.mimeType = e.getResponseHeader('Content-Type');
+        this.config.mimeType = e.contentType;
         if (this.config.createBlob) {
             this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': this.config.mimeType })));
         } else {
@@ -86,24 +88,53 @@ v8t.prototype.finish = function(i, e) {
     }
 };
 
-v8t.prototype.ajax = function(start, end, s, f) {
-    var t_ = this;
-    var x = new XMLHttpRequest();
-    x.onreadystatechange = function() {
-        if (this.readyState == 4) {
-            if (this.status == 206) {
-                s && s.call(t_, x);
-            } else {
-                f && f.call(t_, x);
-            }
-        }
+v8t.prototype.ajaxResult = function(contentRange, arrayBuffer, status, contentType) {
+    return {
+        contentRange: contentRange,
+        arrayBuffer: arrayBuffer,
+        status: status,
+        contentType: contentType
     };
-    x.open("GET", this.url, true);
+};
 
-    x.setRequestHeader('Range', 'bytes=' + start + "-" + end);
+v8t.prototype.ajax = function(start, end, s, f) {
 
-    x.responseType = 'arraybuffer';
-    x.send();
+    var t_ = this;
+    var result;
+    if (fetch) {
+        fetch(this.url, {
+            method: 'GET',
+            cache: 'force-cache',
+            headers: new Headers({
+                "Range": 'bytes=' + start + "-" + end
+            })
+        }).then(function(response) {
+            result = t_.ajaxResult(response.headers.get("Content-Range"), "", response.status, response.headers.get("Content-Type"))
+            return response.arrayBuffer();
+        }).then(function(x) {
+            result.arrayBuffer = new Uint8Array(x);
+            s && s.call(t_, result);
+        });
+    } else {
+        var x = new XMLHttpRequest();
+        x.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                result = t_.ajaxResult(x.getResponseHeader('Content-Range'), new Uint8Array(x.response), this.status, x.getResponseHeader('Content-Type'));
+                if (this.status == 206) {
+                    s && s.call(t_, result);
+                } else {
+                    f && f.call(t_, result);
+                }
+            }
+        };
+        x.open("GET", this.url, true);
+
+        x.setRequestHeader('Range', 'bytes=' + start + "-" + end);
+
+        x.responseType = 'arraybuffer';
+        x.send();
+    }
+
 };
 
 v8t.prototype.init = function(i) {
