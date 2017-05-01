@@ -35,6 +35,9 @@ function v8t(url, thread, partial) {
         }
         return this;
     };
+    this.config = {
+        createBlob: true
+    };
     return this;
 };
 
@@ -48,7 +51,7 @@ v8t.prototype.handle = function(i) {
     }
     this.ajax(start + 1, end, function(e) {
         this.finish(i, e);
-        i = i + 5;
+        i = i + this.thread;
         if (i < this.range / this.partial) {
             this.handle(i);
         }
@@ -63,12 +66,21 @@ v8t.prototype.finish = function(i, e) {
     this.response[i] = new Uint8Array(e.response);
     var length = Object.keys(this.response).length;
     if (length >= this.range / this.partial) {
-        for (var i = 1; i < length; i++) {
-            this.response[i] = this.concat(this.response[i - 1], this.response[i]);
+        if (this.config.createBlob) {
+            for (var i = 1; i < length; i++) {
+                this.response[i] = this.concat(this.response[i - 1], this.response[i]);
+            }
+            this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': this.config.mimeType })));
+        } else {
+            this.done();
         }
-        this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': e.getResponseHeader('Content-Type') })));
     } else if (i == 0) {
-        this.done(URL.createObjectURL(new Blob([this.response[0]], { 'type': e.getResponseHeader('Content-Type') })));
+        this.config.mimeType = e.getResponseHeader('Content-Type');
+        if (this.config.createBlob) {
+            this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': this.config.mimeType })));
+        } else {
+            this.done();
+        }
     } else {
         this.load(parseInt(100 * length / this.range * this.partial));
     }
@@ -97,6 +109,7 @@ v8t.prototype.ajax = function(start, end, s, f) {
 v8t.prototype.init = function(i) {
     switch (i.tagName) {
         case "IMG":
+
             if (i.hasAttribute("thread-src")) {
                 var canvas = document.createElement('canvas');
                 var ctx;
@@ -106,7 +119,7 @@ v8t.prototype.init = function(i) {
 
                 return new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
                     i.onload = function() {
-                        URL.revokeObjectURL(this.url);
+                        URL.revokeObjectURL(this.src);
                     };
                     i.src = url;
                 }).load(function(e) {
@@ -127,12 +140,81 @@ v8t.prototype.init = function(i) {
                     i.src = canvas.toDataURL();
                 });
             }
+
+        case "VIDEO":
+
+            if (i.hasAttribute("thread-src")) {
+
+                window.mediaSource = new MediaSource();
+
+                var buffered = 0;
+
+                mediaSource.addEventListener('sourceopen', function() {
+
+                    window.sourceBuffer = mediaSource.addSourceBuffer(i.getAttribute("type") || 'video/webm; codecs="vorbis,vp8"');
+                    sourceBuffer.addEventListener('updateend', function() {
+                        if (++buffered >= part) {
+                            mediaSource.endOfStream();
+                        } else if (completed) {
+                            sourceBuffer.appendBuffer(this_.response[buffered]);
+                        }
+                        wait = false;
+                    });
+
+                }, false);
+
+                i.onload = function() {
+                    URL.revokeObjectURL(this.src);
+                };
+                i.src = URL.createObjectURL(mediaSource);
+
+                var wait = false;
+                var finish = false;
+                var completed = false;
+                var part = 0;
+                var this_;
+
+                return new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
+
+                    if (finish) {
+
+                        if (buffered < part) {
+                            completed = true;
+                            this_ = this;
+                        }
+
+                    } else {
+
+                        part = this.range / this.partial;
+                        finish = true;
+                        i.hasAttribute("autoplay") && i.play();
+
+                    }
+                    sourceBuffer.appendBuffer(this.response[buffered]);
+
+
+                }).load(function(e) {
+
+                    if (!wait && this.response[buffered]) {
+                        wait = true;
+                        sourceBuffer.appendBuffer(this.response[buffered]);
+                    }
+
+                }).config.createBlob = false;
+
+            }
     }
 };
 
+v8t.prototype.support = ["img", "video"];
+
 (function() {
-    var img = document.getElementsByTagName("img");
-    for (var i = 0; i < img.length; i++) {
-        v8t.prototype.init(img[i]);
-    }
+
+    v8t.prototype.support.forEach(function(e) {
+        var type = document.getElementsByTagName(e);
+        for (var i = 0; i < type.length; i++) {
+            v8t.prototype.init(type[i]);
+        }
+    });
+
 })();
