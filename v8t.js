@@ -94,7 +94,7 @@ v8t.prototype.ajax = function(start, end, s, f) {
     x.send();
 };
 
-v8t.prototype.init(function(i) {
+v8t.prototype.init = function(i) {
     switch (i.tagName) {
         case "BUTTON":
             if (i.hasAttribute("thread-src")) {
@@ -128,7 +128,7 @@ v8t.prototype.init(function(i) {
                 });
             }
     }
-});
+};
 
 (function() {
     var img = document.getElementsByTagName("img");
