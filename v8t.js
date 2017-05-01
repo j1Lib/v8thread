@@ -51,7 +51,7 @@ v8t.prototype.handle = function(i) {
     }
     this.ajax(start + 1, end, function(e) {
         this.finish(i, e);
-        i = i + this.thread;
+        i = i + parseInt(this.thread);
         if (i < this.range / this.partial) {
             this.handle(i);
         }
