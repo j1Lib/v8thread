@@ -4,14 +4,14 @@
 
 <br>
 <h2>Normal (10MB file)</h2>
-<button><a href="data/fantasy_planet_8K.zip">Download</a></button>
+<button><a href="data/fantasy_planet_8K.jpg.zip">Download</a></button>
 
 <script src="v8t.js"></script>
 <script defer>
     var sample = document.getElementById("sample");
     sample.onclick = function() {
         var init = false;
-        new v8t("data/fantasy_planet_8K.zip").done(function(url) {
+        new v8t("data/fantasy_planet_8K.jpg.zip").done(function(url) {
             console.log(url);
         }).load(function(e) {
             sample.innerHTML = "Downloading..." + e + "%";
