@@ -7,7 +7,6 @@ function v8t(url, thread, partial) {
         this.range = e.getResponseHeader('Content-Range').split("/")[1];
 
         this.finish(0, e);
-        //this.response[0] = new Uint8Array(e.response);
 
         for (var i = 1; i < this.range / this.partial; i++) {
             if (i <= this.thread) {
@@ -95,18 +94,9 @@ v8t.prototype.ajax = function(start, end, s, f) {
     x.send();
 };
 
-/*new v8t("fantasy_planet_8K.jpg").done(function(url) {
-    var image = document.getElementById("image")
-    image.onload = function(){
-    	URL.revokeObjectURL(url);
-    };
-    image.src = url;  
-});*/
-
-(function() {
-    var img = document.getElementsByTagName("img");
-    for (var i = 0; i < img.length; i++) {
-        (function(i) {
+v8t.prototype.init(function(i) {
+    switch (i.tagName) {
+        case "BUTTON":
             if (i.hasAttribute("thread-src")) {
                 var canvas = document.createElement('canvas');
                 var ctx;
@@ -114,7 +104,7 @@ v8t.prototype.ajax = function(start, end, s, f) {
                 var angle = 0;
                 var startAngle = 0;
 
-                new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                return new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
                     i.onload = function() {
                         URL.revokeObjectURL(this.url);
                     };
@@ -137,6 +127,12 @@ v8t.prototype.ajax = function(start, end, s, f) {
                     i.src = canvas.toDataURL();
                 });
             }
-        })(img[i]);
+    }
+});
+
+(function() {
+    var img = document.getElementsByTagName("img");
+    for (var i = 0; i < img.length; i++) {
+        v8t.prototype.init(img[i]);
     }
 })();
