@@ -146,62 +146,75 @@ v8t.prototype.init = function(i) {
 
             if (i.hasAttribute("thread-src")) {
 
-                window.mediaSource = new MediaSource();
+                var mediaSource = new MediaSource();
 
                 var buffered = 0;
 
-                mediaSource.addEventListener('sourceopen', function() {
+                var sourceBuffer;
 
-                    window.sourceBuffer = mediaSource.addSourceBuffer(i.getAttribute("type") || 'video/webm; codecs="vorbis,vp8"');
-                    sourceBuffer.addEventListener('updateend', function() {
-                        if (++buffered >= part) {
-                            mediaSource.endOfStream();
-                        } else if (completed) {
-                            sourceBuffer.appendBuffer(this_.response[buffered]);
+                var mimeType = i.getAttribute("type") || 'video/webm; codecs="vorbis,vp8"';
+
+                if (MediaSource.isTypeSupported(mimeType)) {
+
+                    mediaSource.addEventListener('sourceopen', function() {
+
+                        console.log("ok");
+                        sourceBuffer = mediaSource.addSourceBuffer(mimeType);
+                        sourceBuffer.addEventListener('updateend', function() {
+                            if (++buffered >= part) {
+                                mediaSource.endOfStream();
+                            } else if (completed) {
+                                sourceBuffer.appendBuffer(this_.response[buffered]);
+                            }
+                            wait = false;
+                        });
+
+                    }, false);
+
+                    i.onload = function() {
+                        URL.revokeObjectURL(this.src);
+                    };
+                    i.src = URL.createObjectURL(mediaSource);
+
+                    var wait = false;
+                    var finish = false;
+                    var completed = false;
+                    var part = 0;
+                    var this_;
+
+                    return new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
+
+                        if (finish) {
+
+                            if (buffered < part) {
+                                completed = true;
+                                this_ = this;
+                            }
+
+                        } else {
+
+                            part = this.range / this.partial;
+                            finish = true;
+                            i.hasAttribute("autoplay") && i.play();
+
                         }
-                        wait = false;
-                    });
-
-                }, false);
-
-                i.onload = function() {
-                    URL.revokeObjectURL(this.src);
-                };
-                i.src = URL.createObjectURL(mediaSource);
-
-                var wait = false;
-                var finish = false;
-                var completed = false;
-                var part = 0;
-                var this_;
-
-                return new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
-
-                    if (finish) {
-
-                        if (buffered < part) {
-                            completed = true;
-                            this_ = this;
-                        }
-
-                    } else {
-
-                        part = this.range / this.partial;
-                        finish = true;
-                        i.hasAttribute("autoplay") && i.play();
-
-                    }
-                    sourceBuffer.appendBuffer(this.response[buffered]);
-
-
-                }).load(function(e) {
-
-                    if (!wait && this.response[buffered]) {
-                        wait = true;
                         sourceBuffer.appendBuffer(this.response[buffered]);
-                    }
 
-                }).config.createBlob = false;
+
+                    }).load(function(e) {
+
+                        if (!wait && this.response[buffered]) {
+                            wait = true;
+                            sourceBuffer.appendBuffer(this.response[buffered]);
+                        }
+
+                    }).config.createBlob = false;
+
+                } else {
+
+                    i.src = i.getAttribute("thread-src");
+
+                }
 
             }
     }
