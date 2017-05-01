@@ -158,7 +158,6 @@ v8t.prototype.init = function(i) {
 
                     mediaSource.addEventListener('sourceopen', function() {
 
-                        console.log("ok");
                         sourceBuffer = mediaSource.addSourceBuffer(mimeType);
                         sourceBuffer.addEventListener('updateend', function() {
                             if (++buffered >= part) {
