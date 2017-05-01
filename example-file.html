@@ -11,9 +11,7 @@
     var sample = document.getElementById("sample");
     sample.onclick = function() {
         var init = false;
-        new v8t("data/fantasy_planet_8K.jpg.zip").done(function(url) {
-            console.log(url);
-        }).load(function(e) {
+        new v8t("data/fantasy_planet_8K.jpg.zip").load(function(e) {
             sample.innerHTML = "Downloading..." + e + "%";
         }).done(function(url) {
             if (!sample.onclick) {
