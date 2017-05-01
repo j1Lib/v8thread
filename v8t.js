@@ -1,48 +1,70 @@
-function v8t(url) {
+function v8t(url, thread, partial) {
     this.url = url;
-    this.thread = 10;
-    this.partial = 20 * 1024; //20KB
-    this.response = new Uint8Array();
-    this.ajax(0, function(e) {
+    this.partial = (partial || 50) * 1024 - 320; //20KB -GRPS standard speed
+    this.thread = thread || 5;
+    this.response = {};
+    this.ajax(0, this.partial, function(e) {
         this.range = e.getResponseHeader('Content-Range').split("/")[1];
-        this.response = concatTypedArrays(this.response, new Uint8Array(e.response));
+        this.response[0] = new Uint8Array(e.response);
 
-        for (var i = 0; i < this.range / this.partial; i++) {
-            this.handle(i + 1);
+        for (var i = 1; i < this.range / this.partial; i++) {
+            if (i <= this.thread) {
+                this.handle(i);
+            }
         }
-        //console.log(this.range/this.partial);
     }, function(code) {
         window.xhr = code;
         console.log(code.status);
     });
+    var done_;
+    this.done = function(cb) {
+        if (typeof cb == "function") {
+            done_ = cb;
+        } else {
+            done_ && done_.call(this, cb);
+        }
+    };
+    return this;
 };
 
-function concatTypedArrays(a, b) { // a, b TypedArray of same type
-    var c = new(a.constructor)(a.length + b.length);
-    c.set(a, 0);
-    c.set(b, a.length);
-    return c;
-}
+v8t.prototype.concat = function(t, n) { var e = new t.constructor(t.length + n.length); return e.set(t, 0), e.set(n, t.length), e }
 
 v8t.prototype.handle = function(i) {
-    this.ajax(i, function(e) {
-        this.response.push(new Uint8Array(e.response));
+    var start = this.partial * i;
+    var end = start + this.partial;
+    if (end >= this.range) {
+        end = this.range;
+    }
+    this.ajax(start + 1, end, function(e) {
+        this.finish(i, e);
+        i = i + 5;
+        if (i < this.range / this.partial) {
+            this.handle(i);
+        }
     }, function(e) {
         if (e.status == 200) {
-            this.response.push(new Uint8Array(e.response));
-            console.log("finish");
-            console.log(this.response);
+            this.finish(i, e);
         }
     });
 };
 
-v8t.prototype.ajax = function(i, s, f) {
+v8t.prototype.finish = function(i, e) {
+    this.response[i] = new Uint8Array(e.response);
+    var length = Object.keys(this.response).length;
+    if (length >= this.range / this.partial) {
+        for (var i = 1; i < length; i++) {
+            this.response[i] = this.concat(this.response[i - 1], this.response[i]);
+        }
+        this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': e.getResponseHeader('Content-Type') })));
+    }
+};
+
+v8t.prototype.ajax = function(start, end, s, f) {
     var t_ = this;
     var x = new XMLHttpRequest();
     x.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 206) {
-                // s && s(new TextDecoder("utf-8").decode(new Uint8Array(this.response)));
                 s && s.call(t_, x);
             } else {
                 f && f.call(t_, x);
@@ -50,15 +72,33 @@ v8t.prototype.ajax = function(i, s, f) {
         }
     };
     x.open("GET", this.url, true);
-    var end = (i + 1) * this.partial - 320;
-    if (end > this.range) {
-        end = this.range;
-    }
-    x.setRequestHeader('Range', 'bytes=' + i * this.partial + "-" + end); //20KB - gprs
+
+    x.setRequestHeader('Range', 'bytes=' + start + "-" + end);
+
     x.responseType = 'arraybuffer';
     x.send();
 };
 
-new v8t("trolltunga.jpg", function(data) {
+/*new v8t("fantasy_planet_8K.jpg").done(function(url) {
+    var image = document.getElementById("image")
+    image.onload = function(){
+    	URL.revokeObjectURL(url);
+    };
+    image.src = url;  
+});*/
 
-});
+(function() {
+    var img = document.getElementsByTagName("img");
+    for (var i = 0; i < img.length; i++) {
+        (function(i) {
+            if (i.hasAttribute("thread-src")) {
+                new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                    i.onload = function() {
+                        URL.revokeObjectURL(url);
+                    };
+                    i.src = url;
+                });
+            }
+        })(img[i]);
+    }
+})();
