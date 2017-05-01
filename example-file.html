@@ -1,7 +1,29 @@
-<script src="v8t.js" defer></script>
-
-<h2>Muti-Threaded (100MB file)</h2>
+<h2>
+    Muti-Threaded (10MB file)</h2>
+<button id="sample">Download</button>
 
 <br>
-<h2>Normal (100MB file)</h2>
-<a href="data/100MB.zip">Download</a>
+<h2>Normal (10MB file)</h2>
+<button><a href="data/fantasy_planet_8K.zip">Download</a></button>
+
+<script src="v8t.js"></script>
+<script defer>
+    var sample = document.getElementById("sample");
+    sample.onclick = function() {
+        var init = false;
+        new v8t("data/fantasy_planet_8K.zip").done(function(url) {
+            console.log(url);
+        }).load(function(e) {
+            sample.innerHTML = "Downloading..." + e + "%";
+        }).done(function(url) {
+            if (!sample.onclick) {
+                sample.innerHTML = "<a download='" + this.url.substr(this.url.lastIndexOf("/") + 1) + "' href=" + url + ">Download</a>";
+                sample.children[0].click();
+                sample.disabled = false;
+                URL.revokeObjectURL(this.url);
+            } else {
+                sample.onclick = null;
+            }
+        });
+    };
+</script>
