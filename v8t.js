@@ -166,7 +166,7 @@ v8t.prototype.init = function(i) {
                 var startAngle = 0;
 
                 var complete = 0;
-                window.a = new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
                     complete++;
                     i.src = url;
                     i.onload = function() {
