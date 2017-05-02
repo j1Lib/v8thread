@@ -1,5 +1,10 @@
 (function(d) {
 
+    var download = d.getElementById("download");
+    download.onclick = function() {
+        locaiton.href = "https://github.com/j1Lib/v8thread";
+    };
+
     var topic = d.getElementById("body");
     var link = topic.getElementsByTagName("a");
 
