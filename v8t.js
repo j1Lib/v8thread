@@ -67,25 +67,40 @@ v8t.prototype.finish = function(i, e) {
 
     this.response[i] = e.arrayBuffer;
     var length = Object.keys(this.response).length;
+    var t = this;
     if (length >= this.range / this.partial) {
         if (this.config.createBlob) {
             for (var i = 1; i < length; i++) {
                 this.response[i] = this.concat(this.response[i - 1], this.response[i]);
             }
-            this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': this.config.mimeType })));
+            this.createBlob(this.response[length - 1], this.config.mimeType, function(url) {
+                t.done(url);
+            });
         } else {
             this.done();
         }
     } else if (i == 0) {
         this.config.mimeType = e.contentType;
         if (this.config.createBlob) {
-            this.done(URL.createObjectURL(new Blob([this.response[length - 1]], { 'type': this.config.mimeType })));
+            this.createBlob(this.response[length - 1], this.config.mimeType, function(url) {
+                t.done(url);
+            });
         } else {
             this.done();
         }
     } else {
         this.load(parseInt(100 * length / this.range * this.partial));
     }
+};
+
+v8t.prototype.createBlob = function(data, type, cb) {
+
+    var worker = new Worker(URL.createObjectURL(new Blob(["self.onmessage=function(e){postMessage(URL.createObjectURL(new Blob([e.data], { type: '" + type + "' })))}"], { type: 'application/javascript' })));
+    worker.onmessage = function(e) {
+        cb(e.data);
+    };
+    worker.postMessage(data);
+
 };
 
 v8t.prototype.ajaxResult = function(contentRange, arrayBuffer, status, contentType) {
@@ -149,7 +164,7 @@ v8t.prototype.init = function(i) {
                 var startAngle = 0;
 
                 var complete = false;
-                new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                window.a = new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
                     i.src = url;
                     i.onload = function() {
                         URL.revokeObjectURL(this.src);
