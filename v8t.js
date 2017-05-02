@@ -222,6 +222,7 @@ v8t.prototype.init = function(i) {
                             if (++buffered >= part) {
                                 mediaSource.endOfStream();
                             } else if (completed) {
+
                                 sourceBuffer.appendBuffer(this_.response[buffered]);
                             }
                             wait = false;
@@ -256,7 +257,18 @@ v8t.prototype.init = function(i) {
                             i.hasAttribute("autoplay") && i.play();
 
                         }
-                        sourceBuffer.appendBuffer(this.response[buffered]);
+
+                        if (!wait) {
+                            wait = true;
+                            sourceBuffer.appendBuffer(this.response[buffered]);
+                        } else {
+                            setTimeout(function() {
+                                if (!wait) {
+                                    wait = true;
+                                    sourceBuffer.appendBuffer(this.response[buffered]);
+                                }
+                            }, 1000);
+                        }
 
 
                     }).load(function(e) {
