@@ -165,8 +165,9 @@ v8t.prototype.init = function(i) {
                 var angle = 0;
                 var startAngle = 0;
 
-                var complete = false;
+                var complete = 0;
                 window.a = new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                    complete++;
                     i.src = url;
                     i.onload = function() {
                         URL.revokeObjectURL(this.src);
@@ -188,7 +189,9 @@ v8t.prototype.init = function(i) {
                     ctx.strokeText("j1Lib", canvas.width - 100, canvas.height - 50);
                     ctx.stroke();
                     canvas.toBlob(function(e) {
-                        i.src = URL.createObjectURL(e);
+                        if (complete == 1) {
+                            i.src = URL.createObjectURL(e);
+                        }
                     }, 'image/jpeg');
                 });
             }
