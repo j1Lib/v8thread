@@ -6,6 +6,10 @@ body {
     font-family: 'Jura', sans-serif;
 }
 
+.hand {
+    cursor: hand;
+}
+
 div#logo {
     padding: 30px;
     font-size: 40px;
