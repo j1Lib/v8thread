@@ -254,9 +254,6 @@ v8t.prototype.init = function(i) {
                             part = this.range / this.partial;
                             finish = true;
                             i.hasAttribute("autoplay") && i.play();
-                            if (MediaSource.isTypeSupported(this.config.mimeType)) {
-
-                            }
 
                         }
                         sourceBuffer.appendBuffer(this.response[buffered]);
@@ -264,7 +261,7 @@ v8t.prototype.init = function(i) {
 
                     }).load(function(e) {
 
-                        if (!wait && this.response[buffered]) {
+                        if (!wait && this.response[buffered] && buffered != 0) {
                             wait = true;
                             sourceBuffer.appendBuffer(this.response[buffered]);
                         }
