@@ -189,214 +189,280 @@
         partial[16].className = "partial done";
     };
 
+    var handleSingle = function() {
+        if (location.search == "?thread=single") {
+            var title = thread[1].children[0];
+
+            var title2 = thread[1].children[1];
+
+            var temp = title2.innerHTML.slice(3);
+
+            title2.innerHTML = " / " + title.innerHTML;
+
+            title.innerHTML = temp;
+
+            title2.onclick = function() {
+                location.search = "?thread=muti";
+            };
+        } else {
+            var title = thread[1].children[1];
+
+            title.onclick = function() {
+                location.search = "?thread=single";
+            };
+        }
+    };
+
     var handleHash = function() {
         topic.innerHTML = atob(location.hash.slice(1));
         switch (topic.innerText) {
             case "<Img>":
 
                 thread[1].style.display = "block";
-                var partial = thread[1].getElementsByTagName("a");
+
+                handleSingle();
 
                 var test = d.getElementById("test");
-                var image = d.createElement("img");
-                image.setAttribute("thread-src", "data/fantasy_planet_8K.jpg?nocahe" + (new Date).getTime());
-                image.setAttribute("thread", "5");
-                image.setAttribute("partial", "256");
-                image.style.width = "100%";
-                test.appendChild(image);
+                var partial = thread[1].getElementsByTagName("a");
 
-                Log("Test Case", "Small Image (5MB @ 5 Thread / 256KB)");
-                var i = image;
-                if (i.hasAttribute("thread-src")) {
-                    var canvas = document.createElement('canvas');
-                    var ctx;
 
-                    var angle = 0;
-                    var startAngle = 0;
+                if (location.search == "?thread=single") {
 
-                    var complete = 0;
+                    var image = d.createElement("img");
+                    image.style.width = "100%";
+                    image.onload = function() {
+                        LogComplete(start, partial);
+                        for (var i = 0; i < partial.length; i++) {
+                            partial[i].className = "thread";
+                        }
+                    };
+                    test.appendChild(image);
                     var start = new Date();
-                    new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
-                        complete++;
-                        i.src = url;
-                        i.onload = function() {
-                            URL.revokeObjectURL(this.src);
-                        };
-                        if (complete == 1) {
-                            LogReady(this, partial);
-                        } else if (complete == 2) {
-                            LogComplete(start, partial);
-                        }
-                    }).load(function(e) {
-                        if (Object.keys(this.response).length == 2) {
-                            canvas.width = i.width;
-                            canvas.height = i.height;
-                            ctx = canvas.getContext("2d");
-                            ctx.fillStyle = "#424242";
-                            ctx.strokeStyle = "#fff";
-                        }
+                    image.setAttribute("src", "data/fantasy_planet_8K.jpg?nocahe" + (new Date).getTime());
+                    for (var i = 0; i < partial.length; i++) {
+                        partial[i].className = "partial done";
+                    }
+                    Log("Test Case", "Small Image (5MB @ 5 Thread / 256KB)");
 
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        angle += Math.PI / 50 * e;
-                        startAngle += Math.PI / 200 * e;
-                        ctx.arc(canvas.width / 2, canvas.height / 2, 70, startAngle, angle / 2, false);
-                        ctx.font = "30px Arial";
-                        ctx.strokeText("j1Lib", canvas.width - 100, canvas.height - 50);
-                        ctx.stroke();
-                        canvas.toBlob(function(e) {
+                } else {
+
+                    var image = d.createElement("img");
+                    image.setAttribute("thread-src", "data/fantasy_planet_8K.jpg?nocahe" + (new Date).getTime());
+                    image.setAttribute("thread", "5");
+                    image.setAttribute("partial", "256");
+                    image.style.width = "100%";
+                    test.appendChild(image);
+
+                    Log("Test Case", "Small Image (5MB @ 5 Thread / 256KB)");
+                    var i = image;
+                    if (i.hasAttribute("thread-src")) {
+                        var canvas = document.createElement('canvas');
+                        var ctx;
+
+                        var angle = 0;
+                        var startAngle = 0;
+
+                        var complete = 0;
+                        var start = new Date();
+                        new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                            complete++;
+                            i.src = url;
+                            i.onload = function() {
+                                URL.revokeObjectURL(this.src);
+                            };
                             if (complete == 1) {
-                                if (e) {
-                                    i.src = URL.createObjectURL(e);
-                                }
+                                LogReady(this, partial);
+                            } else if (complete == 2) {
+                                LogComplete(start, partial);
                             }
-                        }, 'image/jpeg');
+                        }).load(function(e) {
+                            if (Object.keys(this.response).length == 2) {
+                                canvas.width = i.width;
+                                canvas.height = i.height;
+                                ctx = canvas.getContext("2d");
+                                ctx.fillStyle = "#424242";
+                                ctx.strokeStyle = "#fff";
+                            }
 
-                        LogProgress(Object.keys(this.response).length, e, partial);
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            angle += Math.PI / 50 * e;
+                            startAngle += Math.PI / 200 * e;
+                            ctx.arc(canvas.width / 2, canvas.height / 2, 70, startAngle, angle / 2, false);
+                            ctx.font = "30px Arial";
+                            ctx.strokeText("j1Lib", canvas.width - 100, canvas.height - 50);
+                            ctx.stroke();
+                            canvas.toBlob(function(e) {
+                                if (complete == 1) {
+                                    if (e) {
+                                        i.src = URL.createObjectURL(e);
+                                    }
+                                }
+                            }, 'image/jpeg');
 
-                    });
+                            LogProgress(Object.keys(this.response).length, e, partial);
+
+                        });
+                    }
                 }
 
 
                 break;
             case "<File>":
                 thread[1].style.display = "block";
-                var partial = thread[1].getElementsByTagName("a");
 
-                var test = d.getElementById("test");
-                var image = d.createElement("button");
-                image.style.backgroundColor = "#424242";
-                image.style.color = "#fff";
-                image.disabled = true;
-                image.style.border = "none";
-                image.style.padding = "16px";
-                image.style.boxShadow = "0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)";
-                image.innerHTML = "Preparing file for download..";
-                image.style.marginTop = "50px";
-                test.appendChild(image);
+                handleSingle();
 
-                Log("Test Case", "Small File (5MB @ 5 Thread / 256KB)");
+                if (location.search == "?thread=single") {
 
-                var start = new Date();
-                var complete = 0;
-                new v8t("data/fantasy_planet_8K.jpg.zip?nocahe" + (new Date).getTime(), 5, 256).load(function(e) {
-                    LogProgress(Object.keys(this.response).length, e, partial);
-                }).done(function(url) {
-                    complete++;
-                    if (complete == 1) {
-                        LogReady(this, partial);
-                    } else if (complete == 2) {
-                        LogComplete(start, partial);
-                        image.disabled = false;
-                        image.innerHTML = "<a style='color:#fff;text-decoration: none;' download='" + this.url.substr(this.url.lastIndexOf("/") + 1) + ".zip' href=" + url + ">Ready For Download</a>";
-                        image.style.backgroundColor = "#8BC34A";
-                    }
-                });
+                } else {
 
+                    var partial = thread[1].getElementsByTagName("a");
+
+                    var test = d.getElementById("test");
+                    var image = d.createElement("button");
+                    image.style.backgroundColor = "#424242";
+                    image.style.color = "#fff";
+                    image.disabled = true;
+                    image.style.border = "none";
+                    image.style.padding = "16px";
+                    image.style.boxShadow = "0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)";
+                    image.innerHTML = "Preparing file for download..";
+                    image.style.marginTop = "50px";
+                    test.appendChild(image);
+
+                    Log("Test Case", "Small File (5MB @ 5 Thread / 256KB)");
+
+                    var start = new Date();
+                    var complete = 0;
+                    new v8t("data/fantasy_planet_8K.jpg.zip?nocahe" + (new Date).getTime(), 5, 256).load(function(e) {
+                        LogProgress(Object.keys(this.response).length, e, partial);
+                    }).done(function(url) {
+                        complete++;
+                        if (complete == 1) {
+                            LogReady(this, partial);
+                        } else if (complete == 2) {
+                            LogComplete(start, partial);
+                            image.disabled = false;
+                            image.innerHTML = "<a style='color:#fff;text-decoration: none;' download='" + this.url.substr(this.url.lastIndexOf("/") + 1) + ".zip' href=" + url + ">Ready For Download</a>";
+                            image.style.backgroundColor = "#8BC34A";
+                        }
+                    });
+
+                }
                 break;
             case "<Video>":
             case "<Audio>":
                 thread[1].style.display = "block";
-                var partial = thread[1].getElementsByTagName("a");
 
-                var test = d.getElementById("test");
-                var image;
-                if (topic.innerText == "<Audio>") {
-                    image = d.createElement("audio");
+                handleSingle();
+
+                if (location.search == "?thread=single") {
+
+
+
                 } else {
-                    image = d.createElement("video");
-                }
-                image.setAttribute("thread-src", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm?nocahe" + (new Date).getTime());
-                image.setAttribute("thread", "5");
-                image.setAttribute("partial", "512");
-                image.setAttribute("autoplay", "autoplay");
-                image.setAttribute("controls", "controls");
-                image.style.width = "100%";
-                test.appendChild(image);
+                    var partial = thread[1].getElementsByTagName("a");
 
-                if (topic.innerText == "<Audio>") {
-                    Log("Test Case", "Audio (60MB @ 5 Thread / 512KB)");
-                } else {
-                    Log("Test Case", "Video (60MB @ 5 Thread / 512KB)");
-                }
-                var i = image;
-
-                if (i.hasAttribute("thread-src")) {
-
-                    var mediaSource = new MediaSource();
-
-                    var buffered = 0;
-
-                    var sourceBuffer;
-
-                    var mimeType = i.getAttribute("type") || 'video/webm; codecs="vorbis,vp8"';
-
-                    if (MediaSource.isTypeSupported(mimeType)) {
-
-                        mediaSource.addEventListener('sourceopen', function() {
-
-                            sourceBuffer = mediaSource.addSourceBuffer(mimeType);
-                            sourceBuffer.addEventListener('updateend', function() {
-                                if (++buffered >= part) {
-                                    mediaSource.endOfStream();
-                                } else if (completed) {
-                                    sourceBuffer.appendBuffer(this_.response[buffered]);
-                                }
-                                wait = false;
-                            });
-
-                        }, false);
-
-                        i.onload = function() {
-                            URL.revokeObjectURL(this.src);
-                        };
-                        i.src = URL.createObjectURL(mediaSource);
-
-                        var wait = false;
-                        var finish = false;
-                        var completed = false;
-                        var part = 0;
-                        var this_;
-
-                        var start = new Date();
-                        new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
-
-                            if (finish) {
-
-                                if (buffered < part) {
-                                    completed = true;
-                                    this_ = this;
-                                }
-                                LogComplete(start, partial);
-
-                            } else {
-
-                                part = this.range / this.partial;
-                                finish = true;
-                                i.hasAttribute("autoplay") && i.play();
-                                LogReady(this, partial);
-
-
-                            }
-                            sourceBuffer.appendBuffer(this.response[buffered]);
-
-
-                        }).load(function(e) {
-
-                            if (!wait && this.response[buffered] && buffered != 0) {
-                                wait = true;
-                                sourceBuffer.appendBuffer(this.response[buffered]);
-                            }
-
-                            LogProgress(Object.keys(this.response).length, e, partial);
-
-                        }).config.createBlob = false;
-
+                    var test = d.getElementById("test");
+                    var image;
+                    if (topic.innerText == "<Audio>") {
+                        image = d.createElement("audio");
                     } else {
+                        image = d.createElement("video");
+                    }
+                    image.setAttribute("thread-src", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm?nocahe" + (new Date).getTime());
+                    image.setAttribute("thread", "5");
+                    image.setAttribute("partial", "512");
+                    image.setAttribute("autoplay", "autoplay");
+                    image.setAttribute("controls", "controls");
+                    image.style.width = "100%";
+                    test.appendChild(image);
 
-                        i.src = i.getAttribute("thread-src");
+                    if (topic.innerText == "<Audio>") {
+                        Log("Test Case", "Audio (60MB @ 5 Thread / 512KB)");
+                    } else {
+                        Log("Test Case", "Video (60MB @ 5 Thread / 512KB)");
+                    }
+                    var i = image;
+
+                    if (i.hasAttribute("thread-src")) {
+
+                        var mediaSource = new MediaSource();
+
+                        var buffered = 0;
+
+                        var sourceBuffer;
+
+                        var mimeType = i.getAttribute("type") || 'video/webm; codecs="vorbis,vp8"';
+
+                        if (MediaSource.isTypeSupported(mimeType)) {
+
+                            mediaSource.addEventListener('sourceopen', function() {
+
+                                sourceBuffer = mediaSource.addSourceBuffer(mimeType);
+                                sourceBuffer.addEventListener('updateend', function() {
+                                    if (++buffered >= part) {
+                                        mediaSource.endOfStream();
+                                    } else if (completed) {
+                                        sourceBuffer.appendBuffer(this_.response[buffered]);
+                                    }
+                                    wait = false;
+                                });
+
+                            }, false);
+
+                            i.onload = function() {
+                                URL.revokeObjectURL(this.src);
+                            };
+                            i.src = URL.createObjectURL(mediaSource);
+
+                            var wait = false;
+                            var finish = false;
+                            var completed = false;
+                            var part = 0;
+                            var this_;
+
+                            var start = new Date();
+                            new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
+
+                                if (finish) {
+
+                                    if (buffered < part) {
+                                        completed = true;
+                                        this_ = this;
+                                    }
+                                    LogComplete(start, partial);
+
+                                } else {
+
+                                    part = this.range / this.partial;
+                                    finish = true;
+                                    i.hasAttribute("autoplay") && i.play();
+                                    LogReady(this, partial);
+
+
+                                }
+                                sourceBuffer.appendBuffer(this.response[buffered]);
+
+
+                            }).load(function(e) {
+
+                                if (!wait && this.response[buffered] && buffered != 0) {
+                                    wait = true;
+                                    sourceBuffer.appendBuffer(this.response[buffered]);
+                                }
+
+                                LogProgress(Object.keys(this.response).length, e, partial);
+
+                            }).config.createBlob = false;
+
+                        } else {
+
+                            i.src = i.getAttribute("thread-src");
+
+                        }
 
                     }
-
                 }
                 break;
             default:

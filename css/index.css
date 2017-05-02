@@ -132,3 +132,11 @@ div#result>div>div#testcase>div {
     height: 100%;
     float: right;
 }
+
+div#result>div.Benchmark-thread>p {
+    display: inline;
+}
+
+div#result>div.Benchmark-thread>span {
+    color: #BDBDBD;
+}
