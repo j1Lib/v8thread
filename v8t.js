@@ -187,7 +187,9 @@ v8t.prototype.init = function(i) {
                     ctx.font = "30px Arial";
                     ctx.strokeText("j1Lib", canvas.width - 100, canvas.height - 50);
                     ctx.stroke();
-                    i.src = canvas.toDataURL();
+                    canvas.toBlob(function(e) {
+                        i.src = URL.createObjectURL(e);
+                    }, 'image/jpeg');
                 });
             }
 
