@@ -95,9 +95,11 @@ v8t.prototype.finish = function(i, e) {
 
 v8t.prototype.createBlob = function(data, type, cb) {
 
-    var worker = new Worker(URL.createObjectURL(new Blob(["self.onmessage=function(e){postMessage(URL.createObjectURL(new Blob([e.data], { type: '" + type + "' })))}"], { type: 'application/javascript' })));
+    var wr = URL.createObjectURL(new Blob(["self.onmessage=function(e){postMessage(URL.createObjectURL(new Blob([e.data], { type: '" + type + "' })))}"], { type: 'application/javascript' }));
+    var worker = new Worker(wr);
     worker.onmessage = function(e) {
         cb(e.data);
+        URL.revokeObjectURL(wr);
     };
     worker.postMessage(data);
 
