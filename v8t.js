@@ -190,7 +190,9 @@ v8t.prototype.init = function(i) {
                     ctx.stroke();
                     canvas.toBlob(function(e) {
                         if (complete == 1) {
-                            i.src = URL.createObjectURL(e);
+                            if (e) {
+                                i.src = URL.createObjectURL(e);
+                            }
                         }
                     }, 'image/jpeg');
                 });
