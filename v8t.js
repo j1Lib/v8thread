@@ -121,7 +121,7 @@ v8t.prototype.ajax = function(start, end, s, f) {
     if (fetch) {
         fetch(this.url, {
             method: 'GET',
-            cache: 'force-cache',
+            cache: 'no-cache',
             headers: new Headers({
                 "Range": 'bytes=' + start + "-" + end
             })
