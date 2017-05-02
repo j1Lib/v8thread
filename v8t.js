@@ -148,19 +148,21 @@ v8t.prototype.init = function(i) {
                 var angle = 0;
                 var startAngle = 0;
 
-                return new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                var complete = false;
+                new v8t(i.getAttribute("thread-src"), i.getAttribute("thread") || 5, i.getAttribute("partial") || 50).done(function(url) {
+                    i.src = url;
                     i.onload = function() {
                         URL.revokeObjectURL(this.src);
                     };
-                    i.src = url;
                 }).load(function(e) {
-                    if (e == 2) {
+                    if (Object.keys(this.response).length == 2) {
                         canvas.width = i.width;
                         canvas.height = i.height;
                         ctx = canvas.getContext("2d");
                         ctx.fillStyle = "#424242";
                         ctx.strokeStyle = "#fff";
                     }
+
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     angle += Math.PI / 50 * e;
                     startAngle += Math.PI / 200 * e;
@@ -171,6 +173,8 @@ v8t.prototype.init = function(i) {
                     i.src = canvas.toDataURL();
                 });
             }
+
+            break;
 
         case "AUDIO":
         case "VIDEO":
@@ -212,7 +216,7 @@ v8t.prototype.init = function(i) {
                     var part = 0;
                     var this_;
 
-                    return new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
+                    new v8t(i.getAttribute("thread-src"), 5, i.getAttribute("partial") || 50).done(function(url) {
 
                         if (finish) {
 
@@ -226,6 +230,9 @@ v8t.prototype.init = function(i) {
                             part = this.range / this.partial;
                             finish = true;
                             i.hasAttribute("autoplay") && i.play();
+                            if (MediaSource.isTypeSupported(this.config.mimeType)) {
+
+                            }
 
                         }
                         sourceBuffer.appendBuffer(this.response[buffered]);
@@ -247,7 +254,12 @@ v8t.prototype.init = function(i) {
                 }
 
             }
+
+            break;
     }
+    i.removeAttribute("thread");
+    i.removeAttribute("partial");
+    i.removeAttribute("thread-src");
 };
 
 v8t.prototype.support = ["img", "video", "audio"];
