@@ -377,7 +377,10 @@
         switch (topic.innerText) {
             case "<Img>":
 
-                var url = ["data/fantasy_planet_8K.jpg", "data/world.topo.bathy.200406.3x5400x2700.png", "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"][handleFileSize()];
+
+                var index = handleFileSize();
+                var url = ["data/fantasy_planet_8K.jpg", "data/world.topo.bathy.200406.3x5400x2700.png", "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"][index];
+                var size = ["5MB", "15MB", "640MB"][index];
 
                 thread[1].style.display = "block";
 
@@ -403,7 +406,7 @@
                     for (var i = 0; i < partial.length; i++) {
                         partial[i].className = "partial done";
                     }
-                    Log("Test Case", "Small Image (5MB @ 1 Thread)");
+                    Log("Test Case", "Small Image (" + size + " @ 1 Thread)");
 
                 } else {
 
@@ -414,7 +417,7 @@
                     image.style.width = "100%";
                     test.appendChild(image);
 
-                    Log("Test Case", "Small Image (5MB @ 5 Thread / 256KB)");
+                    Log("Test Case", "Small Image (" + size + " @ 5 Thread / 256KB)");
                     var i = image;
                     if (i.hasAttribute("thread-src")) {
                         var canvas = document.createElement('canvas');
@@ -470,10 +473,10 @@
                 break;
             case "<File>":
 
+                var index = handleFileSize();
+                var url = ["data/fantasy_planet_8K.jpg.zip", "data/world.topo.bathy.200406.3x5400x2700.png.zip", "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"][index];
+                var size = ["5MB", "15MB", "640MB"][index];
 
-                var url = ["data/fantasy_planet_8K.jpg.zip", "data/world.topo.bathy.200406.3x5400x2700.png.zip", "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"][handleFileSize()];
-
-                handleFileSize();
                 thread[1].style.display = "block";
 
                 handleSingle();
@@ -496,7 +499,7 @@
 
                 if (location.search == "?thread=single") {
 
-                    Log("Test Case", "Small File (5MB @ 1Thread)");
+                    Log("Test Case", "Small File (" + size + " @ 1Thread)");
                     var oReq = new XMLHttpRequest();
 
                     var first = false;
@@ -535,7 +538,7 @@
 
                 } else {
 
-                    Log("Test Case", "Small File (5MB @ 5 Thread / 256KB)");
+                    Log("Test Case", "Small File (" + size + " @ 5 Thread / 256KB)");
                     new v8t(url + "?nocahe" + (new Date).getTime(), 5, 256).load(function(e) {
                         LogProgress(Object.keys(this.response).length, e, partial);
                     }).done(function(url) {
@@ -558,9 +561,10 @@
             case "<Video>":
             case "<Audio>":
 
-                var url = ["data/big-buck-bunny_trailer.webm", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm", "https://upload.wikimedia.org/wikipedia/commons/4/4b/Beatboxer_and_dancer_outside_Brixton_underground_station.webm"][handleFileSize()];
+                var index = handleFileSize();
+                var url = ["data/big-buck-bunny_trailer.webm", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm", "https://upload.wikimedia.org/wikipedia/commons/4/4b/Beatboxer_and_dancer_outside_Brixton_underground_station.webm"][index];
+                var size = ["2MB", "60MB", "400MB"][index];
 
-                handleFileSize();
                 thread[1].style.display = "block";
 
                 var partial = thread[1].getElementsByTagName("a");
@@ -582,9 +586,9 @@
                     image.style.width = "100%";
                     test.appendChild(image);
                     if (topic.innerText == "<Audio>") {
-                        Log("Test Case", "Audio (60MB @ 1 Thread)");
+                        Log("Test Case", "Audio (" + size + " @ 1 Thread)");
                     } else {
-                        Log("Test Case", "Video (60MB @ 1 Thread)");
+                        Log("Test Case", "Video (" + size + " @ 1 Thread)");
                     }
                     var last = 0;
                     var complete = 0;
@@ -641,9 +645,9 @@
                     test.appendChild(image);
 
                     if (topic.innerText == "<Audio>") {
-                        Log("Test Case", "Audio (60MB @ 5 Thread / 512KB)");
+                        Log("Test Case", "Audio (" + size + " @ 5 Thread / 512KB)");
                     } else {
-                        Log("Test Case", "Video (60MB @ 5 Thread / 512KB)");
+                        Log("Test Case", "Video (" + size + " @ 5 Thread / 512KB)");
                     }
                     var i = image;
 
