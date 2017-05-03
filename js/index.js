@@ -545,7 +545,10 @@
                         } else if (complete == 2) {
                             LogComplete(start, partial);
                             image.disabled = false;
-                            image.innerHTML = "<a style='color:#fff;text-decoration: none;' download='" + this.url.substr(this.url.lastIndexOf("/") + 1) + ".zip' href=" + url + ">Ready For Download</a>";
+
+                            var a = this.url.substr(this.url.lastIndexOf("."));
+
+                            image.innerHTML = "<a style='color:#fff;text-decoration: none;' download='" + this.url.substr(this.url.lastIndexOf("/") + 1) + a.substr(0, a.lastIndexOf("?")) + "' href=" + url + ">Ready For Download</a>";
                             image.style.backgroundColor = "#8BC34A";
                         }
                     });
@@ -588,33 +591,40 @@
                     var first = false;
                     var start = new Date();
                     image.addEventListener('progress', function() {
-                        if (!first) {
-                            first = true;
-                            var a = image.src.substr(image.src.lastIndexOf("."));
-                            Log("Meta Received",
-                                "Source: " + image.src + "<br/>" +
-                                "MimeType: " + a.substr(0, a.lastIndexOf("?")) + "<br/>" +
-                                "Content-Byte: " + parseInt(this.duration * 100) +
-                                "Thread: " + parseInt(this.duration * 100) + "@1<br/>" +
-                                "Partial " + parseInt(this.duration * 100)
-                            );
-                        } else {
-                            var range = 0;
-                            var bf = this.buffered;
-                            var time = this.currentTime;
-
-                            while (!(bf.start(range) <= time && time <= bf.end(range))) {
-                                range += 1;
-                            }
-                            var loadStartPercentage = bf.start(range) / this.duration;
-                            var loadEndPercentage = bf.end(range) / this.duration;
-                            var loadPercentage = loadEndPercentage - loadStartPercentage;
-
-                            if (loadPercentage == 1) {
-                                LogComplete(start, partial);
+                        if (this.duration) {
+                            if (!first) {
+                                first = true;
+                                var a = image.src.substr(image.src.lastIndexOf("."));
+                                Log("Meta Received",
+                                    "Source: " + image.src + "<br/>" +
+                                    "MimeType: " + a.substr(0, a.lastIndexOf("?")) + "<br/>" +
+                                    "Content-Byte: " + parseInt(this.duration * 100) +
+                                    "Thread: " + parseInt(this.duration * 100) + "@1<br/>" +
+                                    "Partial " + parseInt(this.duration * 100)
+                                );
+                                partial[0].className = "partial done";
                             } else {
-                                LogProgress(parseInt(this.buffered.end(0) * 100) - last, parseInt(loadPercentage * 100), partial);
-                                last = parseInt(this.buffered.end(0) * 100);
+                                var range = 0;
+                                var bf = this.buffered;
+                                var time = this.currentTime;
+
+
+
+                                while (!(bf.start(range) <= time && time <= bf.end(range))) {
+                                    range += 1;
+                                }
+
+                                var loadStartPercentage = bf.start(range) / this.duration;
+                                var loadEndPercentage = bf.end(range) / this.duration;
+                                var loadPercentage = loadEndPercentage - loadStartPercentage;
+
+                                if (loadPercentage == 1) {
+                                    LogComplete(start, partial);
+                                } else {
+                                    LogProgress(parseInt(this.buffered.end(0) * 100) - last, parseInt(loadPercentage * 100), partial);
+                                    last = parseInt(this.buffered.end(0) * 100);
+                                }
+
                             }
                         }
                     });
