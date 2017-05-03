@@ -393,7 +393,7 @@
                 if (location.search == "?thread=single") {
 
                     var image = d.createElement("img");
-                    image.style.width = "100%";
+                    image.style.height = "100%";
                     image.onload = function() {
                         LogComplete(start, partial);
                         for (var i = 0; i < partial.length; i++) {
@@ -414,7 +414,7 @@
                     image.setAttribute("thread-src", url + "?nocahe" + (new Date).getTime());
                     image.setAttribute("thread", "5");
                     image.setAttribute("partial", "256");
-                    image.style.width = "100%";
+                    image.style.height = "100%";
                     test.appendChild(image);
 
                     Log("Test Case", "Small Image (" + size + " @ 5 Thread / 256KB)");
@@ -583,7 +583,7 @@
 
                     image.setAttribute("autoplay", "autoplay");
                     image.setAttribute("controls", "controls");
-                    image.style.width = "100%";
+                    image.style.height = "100%";
                     test.appendChild(image);
                     if (topic.innerText == "<Audio>") {
                         Log("Test Case", "Audio (" + size + " @ 1 Thread)");
@@ -641,7 +641,7 @@
                     image.setAttribute("partial", "512");
                     image.setAttribute("autoplay", "autoplay");
                     image.setAttribute("controls", "controls");
-                    image.style.width = "100%";
+                    image.style.height = "100%";
                     test.appendChild(image);
 
                     if (topic.innerText == "<Audio>") {
