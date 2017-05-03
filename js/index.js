@@ -555,6 +555,8 @@
             case "<Video>":
             case "<Audio>":
 
+                var url = ["data/big-buck-bunny_trailer.webm", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm", ""][handleFileSize()];
+
                 handleFileSize();
                 thread[1].style.display = "block";
 
@@ -616,11 +618,11 @@
                             }
                         }
                     });
-                    image.setAttribute("src", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm?nocahe" + (new Date).getTime());
+                    image.setAttribute("src", url + "?nocahe" + (new Date).getTime());
 
                 } else {
 
-                    image.setAttribute("thread-src", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm?nocahe" + (new Date).getTime());
+                    image.setAttribute("thread-src", url + "?nocahe" + (new Date).getTime());
                     image.setAttribute("thread", "5");
                     image.setAttribute("partial", "512");
                     image.setAttribute("autoplay", "autoplay");
