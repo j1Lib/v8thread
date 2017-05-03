@@ -37,135 +37,273 @@
 
     var LogProgress = function(length, e, partial) {
 
+        if (location.search == "?thread=single") {
 
-        Log("Partial Received", "Chunk " + length + " [" + e + "%]");
-        if (e >= 5) {
-            partial[0].className = "thread";
-            partial[1].className = "partial done";
-        } else {
-            return;
-        }
+            Log("Partial Received", "Content Byte " + length + " [" + e + "%]");
 
-        if (e >= 10) {
-            partial[4].className = "thread";
-            partial[5].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 5) {
+                partial[0].className = "thread";
+                partial[1].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 15) {
-            partial[8].className = "thread";
-            partial[9].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 10) {
+                partial[1].className = "thread";
+                partial[2].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 20) {
-            partial[12].className = "thread";
-            partial[13].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 15) {
+                partial[2].className = "thread";
+                partial[3].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 25) {
-            partial[16].className = "thread";
-            partial[17].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 20) {
+                partial[3].className = "thread";
+                partial[4].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 30) {
-            partial[1].className = "thread";
-            partial[2].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 25) {
+                partial[4].className = "thread";
+                partial[5].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 35) {
-            partial[5].className = "thread";
-            partial[6].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 30) {
+                partial[5].className = "thread";
+                partial[6].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 40) {
-            partial[9].className = "thread";
-            partial[10].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 35) {
+                partial[6].className = "thread";
+                partial[7].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 45) {
-            partial[13].className = "thread";
-            partial[14].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 40) {
+                partial[7].className = "thread";
+                partial[8].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 50) {
-            partial[17].className = "thread";
-            partial[18].className = "thread";
-        } else {
-            return;
-        }
+            if (e >= 45) {
+                partial[8].className = "thread";
+                partial[9].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 55) {
-            partial[2].className = "thread";
-            partial[3].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 50) {
+                partial[9].className = "thread";
+                partial[10].className = "thread";
+            } else {
+                return;
+            }
 
-        if (e >= 60) {
-            partial[6].className = "thread";
-            partial[7].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 55) {
+                partial[10].className = "thread";
+                partial[11].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 65) {
-            partial[10].className = "thread";
-            partial[11].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 60) {
+                partial[11].className = "thread";
+                partial[12].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 70) {
-            partial[14].className = "thread";
-            partial[15].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 65) {
+                partial[12].className = "thread";
+                partial[13].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 75) {
-            partial[18].className = "thread";
-            partial[19].className = "partial done";
-        } else {
-            return;
-        }
+            if (e >= 70) {
+                partial[13].className = "thread";
+                partial[14].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 80) {
-            partial[3].className = "thread";
-        } else {
-            return;
-        }
+            if (e >= 75) {
+                partial[14].className = "thread";
+                partial[15].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 85) {
-            partial[7].className = "thread";
-        } else {
-            return;
-        }
+            if (e >= 80) {
+                partial[15].className = "thread";
+                partial[16].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 90) {
-            partial[11].className = "thread";
-        } else {
-            return;
-        }
+            if (e >= 85) {
+                partial[16].className = "thread";
+                partial[17].className = "partial done";
+            } else {
+                return;
+            }
 
-        if (e >= 95) {
-            partial[15].className = "thread";
+            if (e >= 90) {
+                partial[17].className = "thread";
+                partial[18].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 95) {
+                partial[18].className = "thread";
+                partial[19].className = "partial done";
+            } else {
+                return;
+            }
+
         } else {
-            return;
+            Log("Partial Received", "Chunk " + length + " [" + e + "%]");
+            if (e >= 5) {
+                partial[0].className = "thread";
+                partial[1].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 10) {
+                partial[4].className = "thread";
+                partial[5].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 15) {
+                partial[8].className = "thread";
+                partial[9].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 20) {
+                partial[12].className = "thread";
+                partial[13].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 25) {
+                partial[16].className = "thread";
+                partial[17].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 30) {
+                partial[1].className = "thread";
+                partial[2].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 35) {
+                partial[5].className = "thread";
+                partial[6].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 40) {
+                partial[9].className = "thread";
+                partial[10].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 45) {
+                partial[13].className = "thread";
+                partial[14].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 50) {
+                partial[17].className = "thread";
+                partial[18].className = "thread";
+            } else {
+                return;
+            }
+
+            if (e >= 55) {
+                partial[2].className = "thread";
+                partial[3].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 60) {
+                partial[6].className = "thread";
+                partial[7].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 65) {
+                partial[10].className = "thread";
+                partial[11].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 70) {
+                partial[14].className = "thread";
+                partial[15].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 75) {
+                partial[18].className = "thread";
+                partial[19].className = "partial done";
+            } else {
+                return;
+            }
+
+            if (e >= 80) {
+                partial[3].className = "thread";
+            } else {
+                return;
+            }
+
+            if (e >= 85) {
+                partial[7].className = "thread";
+            } else {
+                return;
+            }
+
+            if (e >= 90) {
+                partial[11].className = "thread";
+            } else {
+                return;
+            }
+
+            if (e >= 95) {
+                partial[15].className = "thread";
+            } else {
+                return;
+            }
         }
     };
 
@@ -213,10 +351,33 @@
         }
     };
 
+    var handleFileSize = function() {
+        var size = thread[1].getElementsByTagName("span");
+        var i = 4;
+        var size_ = location.hash.slice(1).split("#")[1];
+        size[1].style.color = "#fff";
+        var selected = 1;
+        while (--i) {
+            if (size_ == btoa(size[i].innerHTML)) {
+                size[1].style.color = "#BDBDBD";
+                size[i].style.color = "#fff";
+                selected = i;
+            }
+            size[i].onclick = function() {
+                var topic = atob(location.hash.slice(1).split("#")[0]);
+                location.hash = btoa(topic) + "#" + btoa(this.innerHTML);
+                location.reload();
+            };
+        }
+        return selected - 1;
+    };
+
     var handleHash = function() {
-        topic.innerHTML = atob(location.hash.slice(1));
+        topic.innerHTML = atob(location.hash.slice(1).split("#")[0]);
         switch (topic.innerText) {
             case "<Img>":
+
+                var url = ["data/fantasy_planet_8K.jpg", "data/world.topo.bathy.200406.3x5400x2700.png", "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"][handleFileSize()];
 
                 thread[1].style.display = "block";
 
@@ -238,16 +399,16 @@
                     };
                     test.appendChild(image);
                     var start = new Date();
-                    image.setAttribute("src", "data/fantasy_planet_8K.jpg?nocahe" + (new Date).getTime());
+                    image.setAttribute("src", url + "?nocahe" + (new Date).getTime());
                     for (var i = 0; i < partial.length; i++) {
                         partial[i].className = "partial done";
                     }
-                    Log("Test Case", "Small Image (5MB @ 5 Thread / 256KB)");
+                    Log("Test Case", "Small Image (5MB @ 1 Thread)");
 
                 } else {
 
                     var image = d.createElement("img");
-                    image.setAttribute("thread-src", "data/fantasy_planet_8K.jpg?nocahe" + (new Date).getTime());
+                    image.setAttribute("thread-src", url + "?nocahe" + (new Date).getTime());
                     image.setAttribute("thread", "5");
                     image.setAttribute("partial", "256");
                     image.style.width = "100%";
@@ -308,33 +469,74 @@
 
                 break;
             case "<File>":
+
+
+                var url = ["data/fantasy_planet_8K.jpg.zip", "data/world.topo.bathy.200406.3x5400x2700.png.zip", "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"][handleFileSize()];
+
+                handleFileSize();
                 thread[1].style.display = "block";
 
                 handleSingle();
 
+                var partial = thread[1].getElementsByTagName("a");
+                var test = d.getElementById("test");
+                var image = d.createElement("button");
+                image.style.backgroundColor = "#424242";
+                image.style.color = "#fff";
+                image.disabled = true;
+                image.style.border = "none";
+                image.style.padding = "16px";
+                image.style.boxShadow = "0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)";
+                image.innerHTML = "Preparing file for download..";
+                image.style.marginTop = "50px";
+                test.appendChild(image);
+
+                var start = new Date();
+                var complete = 0;
+
                 if (location.search == "?thread=single") {
+
+                    Log("Test Case", "Small File (5MB @ 1Thread)");
+                    var oReq = new XMLHttpRequest();
+
+                    var first = false;
+                    var last = 0;
+                    oReq.addEventListener("progress", function(oEvent) {
+                        if (oEvent.lengthComputable) {
+                            var percentComplete = oEvent.loaded / oEvent.total;
+                            if (!first) {
+                                Log("Meta Received",
+                                    "Source: " + oReq.responseURL + "<br/>" +
+                                    "MimeType: " + oReq.getResponseHeader('Content-Type') + "<br/>" +
+                                    "Content-Byte: " + oEvent.total +
+                                    "Thread: " + oEvent.total + "@1<br/>" +
+                                    "Partial " + oEvent.total
+                                );
+                                partial[0].className = "partial done";
+                                first = true;
+                            } else {
+                                LogProgress(oEvent.loaded - last, parseInt(percentComplete * 100), partial);
+                                last = oEvent.loaded;
+                            }
+
+                        }
+                    });
+                    oReq.addEventListener("load", function() {
+                        var url = URL.createObjectURL(new Blob([new Uint8Array(oReq.response)], { type: oReq.getResponseHeader("Content-Type") }));
+                        image.disabled = false;
+                        image.innerHTML = "<a style='color:#fff;text-decoration: none;' download='" + oReq.responseURL.substr(oReq.responseURL.lastIndexOf("/") + 1) + ".zip' href=" + url + ">Ready For Download</a>";
+                        image.style.backgroundColor = "#8BC34A";
+                        LogComplete(start, partial);
+                    });
+
+                    oReq.responseType = "arraybuffer";
+                    oReq.open("GET", url + "?nocahe" + (new Date).getTime());
+                    oReq.send();
 
                 } else {
 
-                    var partial = thread[1].getElementsByTagName("a");
-
-                    var test = d.getElementById("test");
-                    var image = d.createElement("button");
-                    image.style.backgroundColor = "#424242";
-                    image.style.color = "#fff";
-                    image.disabled = true;
-                    image.style.border = "none";
-                    image.style.padding = "16px";
-                    image.style.boxShadow = "0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)";
-                    image.innerHTML = "Preparing file for download..";
-                    image.style.marginTop = "50px";
-                    test.appendChild(image);
-
                     Log("Test Case", "Small File (5MB @ 5 Thread / 256KB)");
-
-                    var start = new Date();
-                    var complete = 0;
-                    new v8t("data/fantasy_planet_8K.jpg.zip?nocahe" + (new Date).getTime(), 5, 256).load(function(e) {
+                    new v8t(url + "?nocahe" + (new Date).getTime(), 5, 256).load(function(e) {
                         LogProgress(Object.keys(this.response).length, e, partial);
                     }).done(function(url) {
                         complete++;
@@ -352,24 +554,72 @@
                 break;
             case "<Video>":
             case "<Audio>":
+
+                handleFileSize();
                 thread[1].style.display = "block";
 
+                var partial = thread[1].getElementsByTagName("a");
+
+                var test = d.getElementById("test");
                 handleSingle();
+
+                var image;
+                if (topic.innerText == "<Audio>") {
+                    image = d.createElement("audio");
+                } else {
+                    image = d.createElement("video");
+                }
 
                 if (location.search == "?thread=single") {
 
+                    image.setAttribute("autoplay", "autoplay");
+                    image.setAttribute("controls", "controls");
+                    image.style.width = "100%";
+                    test.appendChild(image);
+                    if (topic.innerText == "<Audio>") {
+                        Log("Test Case", "Audio (60MB @ 1 Thread)");
+                    } else {
+                        Log("Test Case", "Video (60MB @ 1 Thread)");
+                    }
+                    var last = 0;
+                    var complete = 0;
+                    var first = false;
+                    var start = new Date();
+                    image.addEventListener('progress', function() {
+                        if (!first) {
+                            first = true;
+                            var a = image.src.substr(image.src.lastIndexOf("."));
+                            Log("Meta Received",
+                                "Source: " + image.src + "<br/>" +
+                                "MimeType: " + a.substr(0, a.lastIndexOf("?")) + "<br/>" +
+                                "Content-Byte: " + parseInt(this.duration * 100) +
+                                "Thread: " + parseInt(this.duration * 100) + "@1<br/>" +
+                                "Partial " + parseInt(this.duration * 100)
+                            );
+                        } else {
+                            var range = 0;
+                            var bf = this.buffered;
+                            var time = this.currentTime;
 
+                            while (!(bf.start(range) <= time && time <= bf.end(range))) {
+                                range += 1;
+                            }
+                            var loadStartPercentage = bf.start(range) / this.duration;
+                            var loadEndPercentage = bf.end(range) / this.duration;
+                            var loadPercentage = loadEndPercentage - loadStartPercentage;
+
+                            if (loadPercentage == 1) {
+                                LogComplete(start, partial);
+                            } else {
+                                LogProgress(parseInt(this.buffered.end(0) * 100) - last, parseInt(loadPercentage * 100), partial);
+                                last = parseInt(this.buffered.end(0) * 100);
+                            }
+                        }
+                    });
+                    image.setAttribute("src", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm?nocahe" + (new Date).getTime());
 
                 } else {
-                    var partial = thread[1].getElementsByTagName("a");
 
-                    var test = d.getElementById("test");
-                    var image;
-                    if (topic.innerText == "<Audio>") {
-                        image = d.createElement("audio");
-                    } else {
-                        image = d.createElement("video");
-                    }
                     image.setAttribute("thread-src", "data/Porter_Robinson_Madeon_-_Shelter_Official_Video_Sh.webm?nocahe" + (new Date).getTime());
                     image.setAttribute("thread", "5");
                     image.setAttribute("partial", "512");
